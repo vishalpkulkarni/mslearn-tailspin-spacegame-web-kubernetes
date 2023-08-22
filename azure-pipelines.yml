@@ -24,7 +24,7 @@ stages:
         buildContext: $(Build.Repository.LocalPath)
         repository: $(webRepository)
         dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
+        containerRegistry: 'vishal-ACR'
         tags: |
           $(tag)
     - task: Docker@2
@@ -34,7 +34,7 @@ stages:
         buildContext: $(Build.Repository.LocalPath)
         repository: $(leaderboardRepository)
         dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
+        containerRegistry: 'vishal-ACR'
         tags: |
           $(tag)
     - publish: '$(Build.SourcesDirectory)/manifests'
@@ -48,7 +48,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: 'ubuntu-20.04'
-    environment: 'OpenShiftARO.rh-stage'
+#    environment: 'OpenShiftARO.rh-stage'
     variables:
     - group: Release
     strategy:
@@ -61,21 +61,23 @@ stages:
             displayName: Create imagePullSecret
             inputs:
               action: createSecret
-              connectionType: OpenShift
+              connectionType: 'OpenShift Connection Service'
+              openshiftService: 'OpenShiftARO'
               secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: 'Container Registry Connection'
-              azureSubscriptionConnection: 'OpenShiftARO'
-              azureResourceGroup: 'tailspin-space-game-rg'
-              kubernetesCluster: 'tailspinspacegame-24591'
+#              dockerRegistryEndpoint: 'Container Registry Connection'
+#              azureSubscriptionConnection: 'OpenShiftARO'
+#              azureResourceGroup: 'tailspin-space-game-rg'
+#              kubernetesCluster: 'tailspinspacegame-24591'
               namespace: 'rh-stage'
           - task: KubernetesManifest@1
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
-              connectionType: OpenShift
-              azureSubscriptionConnection: 'OpenShiftARO'
-              azureResourceGroup: 'tailspin-space-game-rg'
-              kubernetesCluster: 'tailspinspacegame-24591'
+              connectionType: 'OpenShift Connection Service'
+              openshiftService: 'OpenShiftARO'
+#              azureSubscriptionConnection: 'OpenShiftARO'
+#              azureResourceGroup: 'tailspin-space-game-rg'
+#              kubernetesCluster: 'tailspinspacegame-24591'
               namespace: 'rh-stage'
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
