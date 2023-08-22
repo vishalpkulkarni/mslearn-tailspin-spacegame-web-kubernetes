@@ -78,10 +78,10 @@ stages:
               kubernetesCluster: 'tailspinspacegame-24591'
               namespace: 'rh-stage'
               manifests: |
-              $(Pipeline.Workspace)/manifests/deployment.yml
-              $(Pipeline.Workspace)/manifests/service.yml
+                $(Pipeline.Workspace)/manifests/deployment.yml
+                $(Pipeline.Workspace)/manifests/service.yml
               imagePullSecrets: |
-              $(imagePullSecret)
+                $(imagePullSecret)
               containers: |
-              $(RegistryName)/$(webRepository):$(tag)
-              $(RegistryName)/$(leaderboardRepository):$(tag)
+                $(RegistryName)/$(webRepository):$(tag)
+                $(RegistryName)/$(leaderboardRepository):$(tag)
